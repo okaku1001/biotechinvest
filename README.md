@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BiotechInvest
 
-## Getting Started
+BiotechInvest 是一个面向生物科技投资研究的 Next.js 网站，提供公司追踪、行业文章和视频内容入口。
 
-First, run the development server:
+## 技术栈
+
+- Next.js (App Router)
+- React + TypeScript
+- Tailwind CSS v4
+- Framer Motion
+
+## 页面结构
+
+- `/` 首页
+- `/companies` 公司列表
+- `/companies/[slug]` 公司详情
+- `/articles` 文章列表
+- `/articles/[slug]` 文章详情（仅允许已定义 slug，未知 slug 返回 404）
+- `/videos` 视频列表
+- `/about` 关于页面
+- `/disclaimer` 投资免责声明
+
+## 数据来源（当前为本地静态数据）
+
+- 公司数据：`src/data/companies.ts`
+- 文章数据：`src/data/articles.ts`
+
+如需新增文章，请在 `src/data/articles.ts` 中添加 `slug/title/excerpt/publishedAt/content`。
+
+## 本地开发
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+默认访问 [http://localhost:3000](http://localhost:3000)。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 质量检查
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run lint
+npm run typecheck
+npm run build
+```
 
-## Learn More
+## SEO 配置
 
-To learn more about Next.js, take a look at the following resources:
+- 全局 metadata：`src/app/layout.tsx`
+- Robots：`src/app/robots.ts`
+- Sitemap：`src/app/sitemap.ts`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+可通过环境变量配置站点域名：
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+NEXT_PUBLIC_SITE_URL=https://your-domain.com
+```
 
-## Deploy on Vercel
+未配置时默认使用 `https://biotechinvest.vercel.app`。
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 维护建议
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- 把公司与文章数据迁移到 CMS / 数据库，减少手工维护成本
+- 为关键路由增加自动化测试
+- 定期更新免责声明和内容时间戳，避免旧信息误导

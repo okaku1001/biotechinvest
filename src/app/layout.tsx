@@ -17,13 +17,32 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://biotechinvest.vercel.app";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
     default: "BiotechInvest",
     template: "%s | BiotechInvest",
   },
   description:
     "深度追踪生物科技投资机会，提供公司分析、行业文章与视频解读。",
+  keywords: ["生物科技", "Biotech", "投资", "港股", "美股", "医药"],
+  openGraph: {
+    type: "website",
+    locale: "zh_CN",
+    siteName: "BiotechInvest",
+    title: "BiotechInvest",
+    description:
+      "深度追踪生物科技投资机会，提供公司分析、行业文章与视频解读。",
+    url: siteUrl,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "BiotechInvest",
+    description:
+      "深度追踪生物科技投资机会，提供公司分析、行业文章与视频解读。",
+  },
 };
 
 export default function RootLayout({
@@ -36,11 +55,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-        >
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <AmbientBackground />
           <CursorSpotlight />
           <div className="relative flex min-h-svh flex-col">
