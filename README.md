@@ -14,18 +14,50 @@ BiotechInvest 是一个面向生物科技投资研究的 Next.js 网站，提供
 - `/` 首页
 - `/companies` 公司列表
 - `/companies/[slug]` 公司详情
-- `/articles` 文章列表
-- `/articles/[slug]` 文章详情（仅允许已定义 slug，未知 slug 返回 404）
+- `/articles` 文章列表（读取 Obsidian Markdown）
+- `/articles/[slug]` 文章详情
 - `/videos` 视频列表
 - `/about` 关于页面
 - `/disclaimer` 投资免责声明
 
-## 数据来源（当前为本地静态数据）
+## 内容来源
 
-- 公司数据：`src/data/companies.ts`
-- 文章数据：`src/data/articles.ts`
+### 文章（Obsidian CMS）
 
-如需新增文章，请在 `src/data/articles.ts` 中添加 `slug/title/excerpt/publishedAt/content`。
+网站会优先读取以下目录中的 Markdown 文件：
+
+- `OBSIDIAN_ARTICLES_DIR`（环境变量）
+- 默认路径：`/Users/zeyuansun/Documents/Obsidian Vault/BiotechSite`
+- 回退路径：`content/articles`
+
+你可以直接在 Obsidian 里写 `.md`，保存后刷新网站即可看到更新。
+
+可选 frontmatter（不写也能工作）：
+
+```md
+---
+title: "你的标题"
+slug: "your-slug"
+date: "2026-02-13"
+tag: "公司研究"
+summary: "一段摘要"
+readingTimeMinutes: 8
+---
+
+正文...
+```
+
+如果没有 frontmatter，系统会自动：
+
+- 用文件名作为标题
+- 自动生成 slug
+- 用文件修改时间作为发布日期
+- 自动估算阅读时长
+- 取首段作为摘要
+
+### 公司数据
+
+- `src/data/companies.ts`
 
 ## 本地开发
 
@@ -36,6 +68,14 @@ npm run dev
 
 默认访问 [http://localhost:3000](http://localhost:3000)。
 
+## 同步 Obsidian 文章到项目（用于部署备份）
+
+```bash
+npm run sync:obsidian
+```
+
+该命令会把 Obsidian 文章复制到 `content/articles`。
+
 ## 质量检查
 
 ```bash
@@ -44,22 +84,18 @@ npm run typecheck
 npm run build
 ```
 
+## 环境变量
+
+```bash
+NEXT_PUBLIC_SITE_URL=https://your-domain.com
+OBSIDIAN_ARTICLES_DIR=/absolute/path/to/your/obsidian/articles
+```
+
+如果不设置 `OBSIDIAN_ARTICLES_DIR`，默认读取：
+`/Users/zeyuansun/Documents/Obsidian Vault/BiotechSite`。
+
 ## SEO 配置
 
 - 全局 metadata：`src/app/layout.tsx`
 - Robots：`src/app/robots.ts`
 - Sitemap：`src/app/sitemap.ts`
-
-可通过环境变量配置站点域名：
-
-```bash
-NEXT_PUBLIC_SITE_URL=https://your-domain.com
-```
-
-未配置时默认使用 `https://biotechinvest.vercel.app`。
-
-## 维护建议
-
-- 把公司与文章数据迁移到 CMS / 数据库，减少手工维护成本
-- 为关键路由增加自动化测试
-- 定期更新免责声明和内容时间戳，避免旧信息误导

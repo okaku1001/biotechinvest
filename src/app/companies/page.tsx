@@ -4,19 +4,19 @@ import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollReveal } from "@/components/motion/scroll-reveal";
 import { GlowCard } from "@/components/ui/glow-card";
-import { companies } from "@/data/companies";
+import { getAllCompanies } from "@/lib/content/companies";
 
 export const metadata: Metadata = {
   title: "公司列表",
 };
 
-export default function CompaniesPage() {
+export default async function CompaniesPage() {
+  const companies = await getAllCompanies();
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
       <ScrollReveal>
-        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-          公司追踪
-        </h1>
+        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">公司追踪</h1>
         <p className="mt-4 text-lg text-muted-foreground">
           追踪港美股生物医药核心公司的管线进展、财务数据与投资机会。
         </p>
@@ -31,14 +31,9 @@ export default function CompaniesPage() {
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <CardTitle className="text-lg">{company.name}</CardTitle>
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        {company.nameEn}
-                      </p>
+                      <p className="mt-1 text-xs text-muted-foreground">{company.nameEn}</p>
                     </div>
-                    <Badge
-                      variant="secondary"
-                      className="shrink-0 text-[10px]"
-                    >
+                    <Badge variant="secondary" className="shrink-0 text-[10px]">
                       {company.sector}
                     </Badge>
                   </div>
@@ -66,9 +61,7 @@ export default function CompaniesPage() {
                   </p>
                   {company.revenue2024 && (
                     <div className="mt-3 flex items-center gap-2 border-t border-border/50 pt-3">
-                      <span className="text-[10px] text-muted-foreground">
-                        2024 收入
-                      </span>
+                      <span className="text-[10px] text-muted-foreground">2024 收入</span>
                       <span className="text-xs font-semibold text-foreground">
                         {company.revenue2024}
                       </span>

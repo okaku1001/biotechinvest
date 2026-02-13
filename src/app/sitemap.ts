@@ -1,11 +1,15 @@
 import type { MetadataRoute } from "next";
-import { companies } from "@/data/companies";
-import { articles } from "@/data/articles";
+import { getAllArticles } from "@/lib/content/articles";
+import { getAllCompanies } from "@/lib/content/companies";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://biotechinvest.vercel.app";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
+  const [articles, companies] = await Promise.all([
+    getAllArticles(),
+    getAllCompanies(),
+  ]);
 
   const staticRoutes: MetadataRoute.Sitemap = [
     "",

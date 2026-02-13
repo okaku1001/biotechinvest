@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/motion/scroll-reveal";
 import { GlowCard } from "@/components/ui/glow-card";
-import { companies } from "@/data/companies";
+import { getAllCompanies } from "@/lib/content/companies";
 
 const features = [
   {
@@ -26,12 +26,12 @@ const features = [
   },
 ];
 
-const spotlightCompanies = companies.slice(0, 4);
+export default async function HomePage() {
+  const companies = await getAllCompanies();
+  const spotlightCompanies = companies.slice(0, 4);
 
-export default function HomePage() {
   return (
     <div>
-      {/* Hero */}
       <section className="flex min-h-[85vh] flex-col items-center justify-center px-4 text-center">
         <ScrollReveal>
           <Badge
@@ -76,7 +76,6 @@ export default function HomePage() {
         </ScrollReveal>
       </section>
 
-      {/* Spotlight Companies */}
       <section className="mx-auto max-w-7xl px-4 py-32 sm:px-6 lg:px-8">
         <ScrollReveal>
           <h2 className="text-center text-3xl font-bold tracking-tight sm:text-4xl">
@@ -94,9 +93,7 @@ export default function HomePage() {
                 <GlowCard className="h-full">
                   <CardHeader>
                     <div className="flex items-start justify-between gap-2">
-                      <CardTitle className="text-base">
-                        {company.name}
-                      </CardTitle>
+                      <CardTitle className="text-base">{company.name}</CardTitle>
                       <Badge
                         variant="outline"
                         className="shrink-0 border-purple-500/30 text-[10px] text-purple-400"
@@ -104,9 +101,7 @@ export default function HomePage() {
                         {company.ticker.split(" ")[0]}
                       </Badge>
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      {company.nameEn}
-                    </p>
+                    <p className="text-xs text-muted-foreground">{company.nameEn}</p>
                   </CardHeader>
                   <CardContent>
                     <p className="text-xs leading-relaxed text-muted-foreground line-clamp-2">
@@ -128,7 +123,6 @@ export default function HomePage() {
         </ScrollReveal>
       </section>
 
-      {/* Features */}
       <section className="mx-auto max-w-7xl px-4 py-32 sm:px-6 lg:px-8">
         <ScrollReveal>
           <h2 className="text-center text-3xl font-bold tracking-tight sm:text-4xl">
@@ -148,9 +142,7 @@ export default function HomePage() {
                     <CardTitle className="text-lg">{feature.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground">
-                      {feature.description}
-                    </p>
+                    <p className="text-sm text-muted-foreground">{feature.description}</p>
                   </CardContent>
                 </GlowCard>
               </Link>

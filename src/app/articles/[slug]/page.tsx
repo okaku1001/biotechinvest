@@ -3,19 +3,21 @@ import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ScrollReveal } from "@/components/motion/scroll-reveal";
-import { articles, getArticleBySlug } from "@/data/articles";
+import { MarkdownContent } from "@/components/content/markdown";
+import { getAllArticles, getArticleBySlug } from "@/lib/content/articles";
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
 export async function generateStaticParams() {
+  const articles = await getAllArticles();
   return articles.map((article) => ({ slug: article.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const article = getArticleBySlug(slug);
+  const article = await getArticleBySlug(slug);
 
   if (!article) {
     return { title: "文章未找到" };
@@ -29,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ArticleDetailPage({ params }: Props) {
   const { slug } = await params;
-  const article = getArticleBySlug(slug);
+  const article = await getArticleBySlug(slug);
 
   if (!article) {
     notFound();
@@ -60,13 +62,7 @@ export default async function ArticleDetailPage({ params }: Props) {
         <Separator className="my-10" />
 
         <ScrollReveal delay={0.12}>
-          <div className="space-y-5">
-            {article.content.map((paragraph) => (
-              <p key={paragraph} className="leading-relaxed text-muted-foreground">
-                {paragraph}
-              </p>
-            ))}
-          </div>
+          <MarkdownContent markdown={article.content} />
         </ScrollReveal>
       </article>
     </div>

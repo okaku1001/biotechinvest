@@ -9,31 +9,31 @@ import {
 } from "@/components/ui/card";
 import { ScrollReveal } from "@/components/motion/scroll-reveal";
 import { GlowCard } from "@/components/ui/glow-card";
-import { companies, getCompanyBySlug } from "@/data/companies";
+import { getAllCompanies, getCompanyBySlug } from "@/lib/content/companies";
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
 export async function generateStaticParams() {
+  const companies = await getAllCompanies();
   return companies.map((c) => ({ slug: c.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const company = getCompanyBySlug(slug);
+  const company = await getCompanyBySlug(slug);
   if (!company) return { title: "公司未找到" };
   return { title: `${company.name} (${company.nameEn})` };
 }
 
 export default async function CompanyDetailPage({ params }: Props) {
   const { slug } = await params;
-  const company = getCompanyBySlug(slug);
+  const company = await getCompanyBySlug(slug);
   if (!company) notFound();
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-      {/* Header */}
       <ScrollReveal>
         <div className="mb-16">
           <Link
@@ -63,16 +63,13 @@ export default async function CompanyDetailPage({ params }: Props) {
           <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
             {company.name}
           </h1>
-          <p className="mt-1 text-xl text-muted-foreground">
-            {company.nameEn}
-          </p>
+          <p className="mt-1 text-xl text-muted-foreground">{company.nameEn}</p>
           <p className="mt-4 max-w-3xl text-base leading-relaxed text-muted-foreground">
             {company.description}
           </p>
         </div>
       </ScrollReveal>
 
-      {/* Key Metrics */}
       <ScrollReveal delay={0.1}>
         <div className="mb-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {company.financials.map((f) => (
@@ -87,7 +84,6 @@ export default async function CompanyDetailPage({ params }: Props) {
         </div>
       </ScrollReveal>
 
-      {/* Core Products */}
       <ScrollReveal delay={0.15}>
         <h2 className="text-2xl font-bold tracking-tight">核心产品</h2>
       </ScrollReveal>
@@ -106,9 +102,7 @@ export default async function CompanyDetailPage({ params }: Props) {
                   {product.description}
                 </p>
                 {product.revenue && (
-                  <p className="text-sm font-medium text-foreground">
-                    {product.revenue}
-                  </p>
+                  <p className="text-sm font-medium text-foreground">{product.revenue}</p>
                 )}
               </CardContent>
             </GlowCard>
@@ -116,13 +110,10 @@ export default async function CompanyDetailPage({ params }: Props) {
         ))}
       </div>
 
-      {/* Pipeline */}
       {company.pipeline.length > 0 && (
         <>
           <ScrollReveal delay={0.2}>
-            <h2 className="mt-16 text-2xl font-bold tracking-tight">
-              研发管线
-            </h2>
+            <h2 className="mt-16 text-2xl font-bold tracking-tight">研发管线</h2>
           </ScrollReveal>
           <ScrollReveal delay={0.25}>
             <div className="mt-6 overflow-hidden rounded-xl border border-border/50 bg-card/40 backdrop-blur-sm">
@@ -151,12 +142,8 @@ export default async function CompanyDetailPage({ params }: Props) {
                         className="border-b border-border/30 last:border-0"
                       >
                         <td className="px-5 py-3 font-medium">{item.name}</td>
-                        <td className="px-5 py-3 text-muted-foreground">
-                          {item.target}
-                        </td>
-                        <td className="px-5 py-3 text-muted-foreground">
-                          {item.indication}
-                        </td>
+                        <td className="px-5 py-3 text-muted-foreground">{item.target}</td>
+                        <td className="px-5 py-3 text-muted-foreground">{item.indication}</td>
                         <td className="px-5 py-3">
                           <Badge
                             variant="secondary"
@@ -175,20 +162,15 @@ export default async function CompanyDetailPage({ params }: Props) {
         </>
       )}
 
-      {/* Catalysts */}
       <ScrollReveal delay={0.3}>
-        <h2 className="mt-16 text-2xl font-bold tracking-tight">
-          近期催化剂
-        </h2>
+        <h2 className="mt-16 text-2xl font-bold tracking-tight">近期催化剂</h2>
       </ScrollReveal>
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
         {company.catalysts.map((catalyst, i) => (
           <ScrollReveal key={i} delay={0.08 * (i + 1) + 0.3}>
             <div className="flex gap-3 rounded-xl border border-border/50 bg-card/40 p-5 backdrop-blur-sm">
               <div className="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-gradient-to-r from-purple-500 to-blue-500" />
-              <p className="text-sm leading-relaxed text-muted-foreground">
-                {catalyst}
-              </p>
+              <p className="text-sm leading-relaxed text-muted-foreground">{catalyst}</p>
             </div>
           </ScrollReveal>
         ))}

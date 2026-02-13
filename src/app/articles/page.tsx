@@ -3,13 +3,15 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollReveal } from "@/components/motion/scroll-reveal";
-import { articles } from "@/data/articles";
+import { getAllArticles } from "@/lib/content/articles";
 
 export const metadata: Metadata = {
   title: "文章列表",
 };
 
-export default function ArticlesPage() {
+export default async function ArticlesPage() {
+  const articles = await getAllArticles();
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
       <ScrollReveal>
@@ -32,6 +34,9 @@ export default function ArticlesPage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">{article.excerpt}</p>
+                  <p className="mt-3 text-xs text-muted-foreground/80">
+                    {article.publishedAt} · {article.readingTimeMinutes} 分钟阅读
+                  </p>
                 </CardContent>
               </Card>
             </Link>
